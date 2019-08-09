@@ -11,15 +11,24 @@ public class BabysitterCharge {
     private final String MAXIMUM_END_TIME = "04:00";
 
     public int calculate(LocalDateTime startTimeInput, LocalDateTime endTimeInput, String familyType) {
-        validate(startTimeInput, endTimeInput, familyType);
+        validateTimes(startTimeInput, endTimeInput);
+        if(familyType.equalsIgnoreCase("A")){
+
+        }
+        if (familyType.equalsIgnoreCase("B")){
+
+        }
+        if (familyType.equalsIgnoreCase("C")){
+
+        }else {
+            throw new InvalidFamilyTypeException();
+        }
         return 1;
     }
 
-    private void validate(LocalDateTime startDateAndTime, LocalDateTime endDateAndTime, String familyType) {
+    private void validateTimes(LocalDateTime startDateAndTime, LocalDateTime endDateAndTime) {
         LocalTime minimumStartTime = LocalTime.parse(MINIMUM_START_TIME);
         LocalTime maximumEndTime = LocalTime.parse(MAXIMUM_END_TIME);
-        List<String> validFamilyTypes = Arrays.asList("A", "B", "C");
-
         if (endDateAndTime.isBefore(startDateAndTime)) {
             throw new InvalidTimeException();
         } else {
@@ -33,8 +42,5 @@ public class BabysitterCharge {
                 }
             }
         }
-
-        if (!validFamilyTypes.contains(familyType))
-            throw new InvalidFamilyTypeException();
     }
 }
