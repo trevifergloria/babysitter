@@ -53,7 +53,7 @@ public class BabysitterChargeTest {
     }
 
     @Test
-    public void whenFamilyTypeIsAAndStartTimeIsAfter11PMItPays20USDPerHour() {
+    public void whenFamilyTypeIsAAndStartTimeIsAfter2300ItPays20USDPerHour() {
         LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 23, 20);
         LocalDateTime endTime = LocalDateTime.of(2019, 8, 5, 1, 10);
         int payment = babysitterCharge.calculate(startTime, endTime, "A");
@@ -61,10 +61,34 @@ public class BabysitterChargeTest {
     }
 
     @Test
-    public void whenFamilyTypeIsAAndStartTimeIsBefore11PMAndEndEndTimeIsAfterItPaysAccordinglyPerHour() {
+    public void whenFamilyTypeIsAAndStartTimeIsBefore2300AndEndEndTimeIsAfterItPaysAccordinglyPerHour() {
         LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 22, 20);
         LocalDateTime endTime = LocalDateTime.of(2019, 8, 4, 23, 50);
         int payment = babysitterCharge.calculate(startTime, endTime, "A");
         assertEquals(35, payment);
+    }
+
+    @Test
+    public void whenFamilyTypeIsCAndEndTimeIsBefore2100ItPays21USDPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 19, 20);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 4, 20, 10);
+        int payment = babysitterCharge.calculate(startTime, endTime, "C");
+        assertEquals(21, payment);
+    }
+
+    @Test
+    public void whenFamilyTypeIsCAndStartTimeIsAfter2100ItPays15USDPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 23, 20);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 5, 1, 10);
+        int payment = babysitterCharge.calculate(startTime, endTime, "C");
+        assertEquals(30, payment);
+    }
+
+    @Test
+    public void whenFamilyTypeIsCAndStartTimeIsBefore2100AndEndEndTimeIsAfterItPaysAccordinglyPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 20, 10);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 4, 21, 50);
+        int payment = babysitterCharge.calculate(startTime, endTime, "C");
+        assertEquals(36, payment);
     }
 }

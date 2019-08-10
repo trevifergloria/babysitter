@@ -28,7 +28,18 @@ public class BabysitterCharge {
         } else if (familyType.equalsIgnoreCase("B")) {
 
         } else if (familyType.equalsIgnoreCase("C")) {
-
+            LocalDateTime rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(21, 0);
+            if (endDateAndTimeInput.isBefore(rateChangeTime)) {
+                totalPayment = getPayableHours(startDateAndTimeInput, endDateAndTimeInput, 21);
+            } else {
+                if (startDateAndTimeInput.isAfter(rateChangeTime)) {
+                    totalPayment = getPayableHours(startDateAndTimeInput, endDateAndTimeInput, 15);
+                } else {
+                    int partialPaymentBefore11pm = getPayableHours(startDateAndTimeInput, rateChangeTime, 21);
+                    int partialPaymentAfter11pm = getPayableHours(rateChangeTime, endDateAndTimeInput, 15);
+                    totalPayment = partialPaymentBefore11pm + partialPaymentAfter11pm;
+                }
+            }
         } else {
             throw new InvalidFamilyTypeException();
         }
