@@ -2,28 +2,33 @@ package com.pillar.kata.babysitter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 public class BabysitterCharge {
 
     private final String MINIMUM_START_TIME = "17:00";
     private final String MAXIMUM_END_TIME = "04:00";
 
-    public int calculate(LocalDateTime startTimeInput, LocalDateTime endTimeInput, String familyType) {
-        validateTimes(startTimeInput, endTimeInput);
-        if(familyType.equalsIgnoreCase("A")){
+    public int calculate(LocalDateTime startDateAndTimeInput, LocalDateTime endDateAndTimeInput, String familyType) {
+        validateTimes(startDateAndTimeInput, endDateAndTimeInput);
+        int totalPayment = 0;
+        if (familyType.equalsIgnoreCase("A")) {
+            if (endDateAndTimeInput.toLocalTime().isBefore(LocalTime.of(23, 0))) {
+                int diff = (int) ChronoUnit.HOURS.between(startDateAndTimeInput, endDateAndTimeInput);
+                totalPayment = (diff + 1) * 15;
+            }
+            if (startDateAndTimeInput.toLocalTime().isAfter(LocalTime.of(23, 0))) {
+                int diff = (int) ChronoUnit.HOURS.between(startDateAndTimeInput, endDateAndTimeInput);
+                totalPayment = (diff + 1) * 20;
+            }
+        } else if (familyType.equalsIgnoreCase("B")) {
 
-        }
-        if (familyType.equalsIgnoreCase("B")){
+        } else if (familyType.equalsIgnoreCase("C")) {
 
-        }
-        if (familyType.equalsIgnoreCase("C")){
-
-        }else {
+        } else {
             throw new InvalidFamilyTypeException();
         }
-        return 1;
+        return totalPayment;
     }
 
     private void validateTimes(LocalDateTime startDateAndTime, LocalDateTime endDateAndTime) {
