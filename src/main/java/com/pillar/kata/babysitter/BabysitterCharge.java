@@ -13,13 +13,17 @@ public class BabysitterCharge {
         validateTimes(startDateAndTimeInput, endDateAndTimeInput);
         int totalPayment = 0;
         if (familyType.equalsIgnoreCase("A")) {
-            if (endDateAndTimeInput.toLocalTime().isBefore(LocalTime.of(23, 0))) {
-                int diff = (int) ChronoUnit.HOURS.between(startDateAndTimeInput, endDateAndTimeInput);
-                totalPayment = (diff + 1) * 15;
-            }
-            if (startDateAndTimeInput.toLocalTime().isAfter(LocalTime.of(23, 0))) {
-                int diff = (int) ChronoUnit.HOURS.between(startDateAndTimeInput, endDateAndTimeInput);
-                totalPayment = (diff + 1) * 20;
+            LocalDateTime rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(23, 0);
+            if (endDateAndTimeInput.isBefore(rateChangeTime)) {
+                totalPayment = getPayableHours(startDateAndTimeInput, endDateAndTimeInput, 15);
+            } else {
+                if (startDateAndTimeInput.isAfter(rateChangeTime)) {
+                    totalPayment = getPayableHours(startDateAndTimeInput, endDateAndTimeInput, 20);
+                } else {
+                    int partialPaymentBefore11pm = getPayableHours(startDateAndTimeInput, rateChangeTime, 15);
+                    int partialPaymentAfter11pm = getPayableHours(rateChangeTime, endDateAndTimeInput, 20);
+                    totalPayment = partialPaymentBefore11pm + partialPaymentAfter11pm;
+                }
             }
         } else if (familyType.equalsIgnoreCase("B")) {
 
@@ -29,6 +33,10 @@ public class BabysitterCharge {
             throw new InvalidFamilyTypeException();
         }
         return totalPayment;
+    }
+
+    private int getPayableHours(LocalDateTime startDateAndTimeInput, LocalDateTime endDateAndTimeInput, int perHour) {
+        return ((int) ChronoUnit.HOURS.between(startDateAndTimeInput, endDateAndTimeInput) + 1) * perHour;
     }
 
     private void validateTimes(LocalDateTime startDateAndTime, LocalDateTime endDateAndTime) {

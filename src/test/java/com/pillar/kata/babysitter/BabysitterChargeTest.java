@@ -53,10 +53,18 @@ public class BabysitterChargeTest {
     }
 
     @Test
-    public void whenFamilyTypeIsAAndEndTimeIsAfter11PMItPays20USDPerHour() {
+    public void whenFamilyTypeIsAAndStartTimeIsAfter11PMItPays20USDPerHour() {
         LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 23, 20);
         LocalDateTime endTime = LocalDateTime.of(2019, 8, 5, 1, 10);
         int payment = babysitterCharge.calculate(startTime, endTime, "A");
         assertEquals(40, payment);
+    }
+
+    @Test
+    public void whenFamilyTypeIsAAndStartTimeIsBefore11PMAndEndEndTimeIsAfterItPaysAccordinglyPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 22, 20);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 4, 23, 50);
+        int payment = babysitterCharge.calculate(startTime, endTime, "A");
+        assertEquals(35, payment);
     }
 }
