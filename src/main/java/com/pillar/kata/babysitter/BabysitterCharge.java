@@ -12,20 +12,19 @@ public class BabysitterCharge {
     public int calculate(LocalDateTime startDateAndTimeInput, LocalDateTime endDateAndTimeInput, String familyType) {
         validateTimes(startDateAndTimeInput, endDateAndTimeInput);
         LocalDateTime rateChangeTime;
-        int totalPayment = 0;
-        if (familyType.equalsIgnoreCase("A")) {
-            rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(23, 0);
-            totalPayment = getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 15, 20);
-        } else if (familyType.equalsIgnoreCase("B")) {
-            rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(22, 0);
-            totalPayment = getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 12, 8, 16);
-        } else if (familyType.equalsIgnoreCase("C")) {
-            rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(21, 0);
-            totalPayment = getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 21, 15);
-        } else {
-            throw new InvalidFamilyTypeException();
+        switch (familyType.toUpperCase()) {
+            case "A":
+                rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(23, 0);
+                return getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 15, 20);
+            case "B":
+                rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(22, 0);
+                return getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 12, 8, 16);
+            case "C":
+                rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(21, 0);
+                return getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 21, 15);
+            default:
+                throw new InvalidFamilyTypeException();
         }
-        return totalPayment;
     }
 
     private int getTotalPayment(LocalDateTime startDateAndTimeInput, LocalDateTime endDateAndTimeInput, LocalDateTime rateChangeTime, int initialRate, int middleRate, int finalRate) {
