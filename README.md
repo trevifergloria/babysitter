@@ -1,6 +1,5 @@
-# Getting Started
+This project is developed on JDK 8. To run the tests, execute
 
-### Reference Documentation
-For further reference, please consider the following sections:
-
-* [Official Gradle documentation](https://docs.gradle.org)
+```shell
+./gradlew test
+```
