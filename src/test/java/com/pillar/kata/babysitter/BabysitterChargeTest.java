@@ -91,4 +91,53 @@ public class BabysitterChargeTest {
         int payment = babysitterCharge.calculate(startTime, endTime, "C");
         assertEquals(36, payment);
     }
+
+    @Test
+    public void whenFamilyTypeIsBAndEndTimeIsBefore2200ItPays12USDPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 20, 10);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 4, 21, 50);
+        int payment = babysitterCharge.calculate(startTime, endTime, "B");
+        assertEquals(24, payment);
+    }
+
+    @Test
+    public void whenFamilyTypeIsBAndStartTimeIsAfterMidnightItPays16USDPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 5, 0, 10);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 5, 2, 0);
+        int payment = babysitterCharge.calculate(startTime, endTime, "B");
+        assertEquals(32, payment);
+    }
+
+    @Test
+    public void whenFamilyTypeIsBAndTimesAreBetween2200AndMidnightItPays8USDPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 22, 10);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 4, 23, 50);
+        int payment = babysitterCharge.calculate(startTime, endTime, "B");
+        assertEquals(16, payment);
+    }
+
+    @Test
+    public void whenFamilyTypeIsBAndStartTimeIsBefore2200AndEndTimeIsAfterMidnightItPaysAccordinglyPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 21, 10);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 5, 1, 50);
+        int payment = babysitterCharge.calculate(startTime, endTime, "B");
+        assertEquals(60, payment);
+    }
+
+    @Test
+    public void whenFamilyTypeIsBAndStartTimeIsBefore2200AndEndTimeIsBeforeMidnightItPaysAccordinglyPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 21, 10);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 4, 22, 50);
+        int payment = babysitterCharge.calculate(startTime, endTime, "B");
+        assertEquals(20, payment);
+    }
+
+    @Test
+    public void whenFamilyTypeIsBAndStartTimeIsAfter2200AndEndTimeIsAfterMidnightItPaysAccordinglyPerHour() {
+        LocalDateTime startTime = LocalDateTime.of(2019, 8, 4, 23, 10);
+        LocalDateTime endTime = LocalDateTime.of(2019, 8, 5, 1, 50);
+        int payment = babysitterCharge.calculate(startTime, endTime, "B");
+        assertEquals(40, payment);
+    }
+
 }
