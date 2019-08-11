@@ -33,19 +33,11 @@ public class BabysitterCharge {
                 endDateAndTimeInput.toLocalDate().atStartOfDay().plusDays(1) :
                 endDateAndTimeInput.toLocalDate().atStartOfDay();
         if (startDateAndTimeInput.toLocalTime().isAfter(MINIMUM_START_TIME) &&
-                endDateAndTimeInput.isBefore(rateChangeTime)) {
-            return getPayableHours(startDateAndTimeInput, endDateAndTimeInput, initialRate);
-        }
-        if (startDateAndTimeInput.isAfter(rateChangeTime) &&
                 endDateAndTimeInput.isBefore(midnight)) {
-            return getPayableHours(startDateAndTimeInput, endDateAndTimeInput, middleRate);
-        }
-
-        if (endDateAndTimeInput.isBefore(midnight)) {
             return getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, initialRate, middleRate);
         }
-        if (startDateAndTimeInput.isAfter(rateChangeTime)
-                && endDateAndTimeInput.isAfter(midnight)) {
+        if (startDateAndTimeInput.isAfter(rateChangeTime) &&
+                endDateAndTimeInput.toLocalTime().isBefore(MAXIMUM_END_TIME)) {
             return getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, midnight, middleRate, finalRate);
         }
         if (startDateAndTimeInput.toLocalTime().isAfter(MINIMUM_START_TIME)
