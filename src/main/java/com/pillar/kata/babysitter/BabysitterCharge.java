@@ -18,35 +18,7 @@ public class BabysitterCharge {
             totalPayment = getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 15, 20);
         } else if (familyType.equalsIgnoreCase("B")) {
             rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(22, 0);
-
-            LocalDateTime midnight = ((startDateAndTimeInput.toLocalDate().equals(endDateAndTimeInput.toLocalDate()) &&
-                    !startDateAndTimeInput.toLocalTime().isBefore(MAXIMUM_END_TIME))) ?
-                    endDateAndTimeInput.toLocalDate().atStartOfDay().plusDays(1) :
-                    endDateAndTimeInput.toLocalDate().atStartOfDay();
-            if (startDateAndTimeInput.toLocalTime().isAfter(MINIMUM_START_TIME) &&
-                    endDateAndTimeInput.isBefore(rateChangeTime)) {
-                totalPayment = getPayableHours(startDateAndTimeInput, endDateAndTimeInput, 12);
-            }
-            if (startDateAndTimeInput.isAfter(rateChangeTime) &&
-                    endDateAndTimeInput.isBefore(midnight)) {
-                totalPayment = getPayableHours(startDateAndTimeInput, endDateAndTimeInput, 8);
-            }
-            if (startDateAndTimeInput.isAfter(midnight)) {
-                totalPayment = getPayableHours(startDateAndTimeInput, endDateAndTimeInput, 16);
-            }
-            if (endDateAndTimeInput.isBefore(midnight)) {
-                totalPayment = getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 12, 8);
-            }
-            if (startDateAndTimeInput.isAfter(rateChangeTime)
-                    && endDateAndTimeInput.isAfter(midnight)) {
-                totalPayment = getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, midnight, 8, 16);
-            }
-            if (startDateAndTimeInput.toLocalTime().isAfter(MINIMUM_START_TIME)
-                    && startDateAndTimeInput.isBefore(rateChangeTime)
-                    && endDateAndTimeInput.isAfter(midnight)) {
-                totalPayment = getTotalPayment(startDateAndTimeInput, midnight.minusMinutes(1), rateChangeTime, 12, 8);
-                totalPayment += getPayableHours(midnight, endDateAndTimeInput, 16);
-            }
+            totalPayment = getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 12, 8, 16);
         } else if (familyType.equalsIgnoreCase("C")) {
             rateChangeTime = startDateAndTimeInput.toLocalDate().atTime(21, 0);
             totalPayment = getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, 21, 15);
@@ -54,6 +26,36 @@ public class BabysitterCharge {
             throw new InvalidFamilyTypeException();
         }
         return totalPayment;
+    }
+
+    private int getTotalPayment(LocalDateTime startDateAndTimeInput, LocalDateTime endDateAndTimeInput, LocalDateTime rateChangeTime, int initialRate, int middleRate, int finalRate) {
+        LocalDateTime midnight = ((startDateAndTimeInput.toLocalDate().equals(endDateAndTimeInput.toLocalDate()) &&
+                !startDateAndTimeInput.toLocalTime().isBefore(MAXIMUM_END_TIME))) ?
+                endDateAndTimeInput.toLocalDate().atStartOfDay().plusDays(1) :
+                endDateAndTimeInput.toLocalDate().atStartOfDay();
+        if (startDateAndTimeInput.toLocalTime().isAfter(MINIMUM_START_TIME) &&
+                endDateAndTimeInput.isBefore(rateChangeTime)) {
+            return getPayableHours(startDateAndTimeInput, endDateAndTimeInput, initialRate);
+        }
+        if (startDateAndTimeInput.isAfter(rateChangeTime) &&
+                endDateAndTimeInput.isBefore(midnight)) {
+            return getPayableHours(startDateAndTimeInput, endDateAndTimeInput, middleRate);
+        }
+
+        if (endDateAndTimeInput.isBefore(midnight)) {
+            return getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, rateChangeTime, initialRate, middleRate);
+        }
+        if (startDateAndTimeInput.isAfter(rateChangeTime)
+                && endDateAndTimeInput.isAfter(midnight)) {
+            return getTotalPayment(startDateAndTimeInput, endDateAndTimeInput, midnight, middleRate, finalRate);
+        }
+        if (startDateAndTimeInput.toLocalTime().isAfter(MINIMUM_START_TIME)
+                && startDateAndTimeInput.isBefore(rateChangeTime)
+                && endDateAndTimeInput.isAfter(midnight)) {
+            int partialPayment = getTotalPayment(startDateAndTimeInput, midnight.minusMinutes(1), rateChangeTime, initialRate, middleRate);
+            return partialPayment + getPayableHours(midnight, endDateAndTimeInput, finalRate);
+        }
+        return getPayableHours(startDateAndTimeInput, endDateAndTimeInput, finalRate);
     }
 
     private int getTotalPayment(LocalDateTime startDateAndTimeInput, LocalDateTime endDateAndTimeInput, LocalDateTime rateChangeTime, int initialRate, int afterRate) {
