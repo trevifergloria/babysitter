@@ -63,7 +63,7 @@ public class BabysitterCharge {
     }
 
     private int getPayableHours(LocalDateTime startDateAndTimeInput, LocalDateTime endDateAndTimeInput, int perHour) {
-        return ((int) ChronoUnit.HOURS.between(startDateAndTimeInput, endDateAndTimeInput) + 1) * perHour;
+        return (int) ChronoUnit.HOURS.between(startDateAndTimeInput, endDateAndTimeInput) * perHour;
     }
 
     private void validateTimes(LocalDateTime startDateAndTime, LocalDateTime endDateAndTime) {
